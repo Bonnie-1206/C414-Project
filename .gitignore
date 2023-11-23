@@ -1,9 +1,16 @@
+*.py[cod]
+
+.Python
+[Bb]in
+[Ii]nclude
+[Ll]ib
+[Ll]ib64
+[Ll]ocal
+[Ss]cripts
+pyvenv.cfg
 venv
 .venv
 pip-selfcheck.json
 
 output
 .output
-
-data
-.data
