@@ -457,6 +457,10 @@ def getNormalData_byHistVid_andImgs(vid_hist, im, pa_gt, ft_gt, curidx, left = -
 
     offset_right = round(right/delta)
 
+
+    if len(lb.shape) > 2:
+        lb = lb[:, :, 0]
+
     hist_data = torch.abs(vid_hist - vid_hist)
     labs_data = lb.reshape(row_im*column_im)
 
@@ -1603,6 +1607,7 @@ def main(argc, argv):
 #    for i in range(1, NUM):
 
         print("idxval = ", idxval)
+
         data_vid, labs_vid = getNormalData_byHistVid_andImgs(vid_hist, trainimgs[i], pa_gt, ft_gt, idxval, left_data, right_data, delta )
 
 
