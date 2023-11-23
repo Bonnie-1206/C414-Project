@@ -1,0 +1,9 @@
+venv
+.venv
+pip-selfcheck.json
+
+output
+.output
+
+data
+.data
