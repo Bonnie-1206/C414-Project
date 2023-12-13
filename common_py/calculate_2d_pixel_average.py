@@ -22,14 +22,17 @@ def calculate_2d_pixel_nearest_neighbor(frames):
     stacked_frames = np.stack(frames, axis=0)
 
     # 初始化一个数组来保存最近邻平均值
+    #Initialize an array to hold the nearest neighbor average
     nearest_neighbor_average = np.zeros(frame_shape)
 
     # 遍历每个像素
+    # Iterate over each pixel
     for i in range(frame_shape[0]):
         for j in range(frame_shape[1]):
             pixel_values = stacked_frames[:, i, j]
             average = np.mean(pixel_values)
             # 找到最接近平均值的像素值
+            # Find the pixel value closest to the average
             nearest = min(pixel_values, key=lambda x: abs(x - average))
             nearest_neighbor_average[i, j] = nearest
 
