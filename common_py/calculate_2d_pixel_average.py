@@ -2,57 +2,60 @@ import numpy as np
 import matplotlib.pyplot as plt
 from skimage import io
 
-def calculate_2d_pixel_average(frames):
+def calculate_2d_pixel_nearest_neighbor(frames):
     """
-    Calculate the average of pixel values across a sequence of 2D frames.
+    使用最近邻算法计算一系列帧的2D像素平均值。
 
-    Parameters:
-    frames (list of np.array): List of 2D arrays representing image frames.
+    参数:
+    frames (list of np.array): 代表图像帧的2D数组列表。
 
-    Returns:
-    np.array: A 2D array representing the average pixel values.
+    返回:
+    np.array: 代表平均像素值的2D数组。
     """
     if not frames:
         raise ValueError("The frame list is empty.")
 
-    # Check that all frames are the same size
     frame_shape = frames[0].shape
     if any(frame.shape != frame_shape for frame in frames):
         raise ValueError("All frames must have the same dimensions.")
 
-    # Stack all frames into a 3D numpy array (assuming all frames are grayscale images)
     stacked_frames = np.stack(frames, axis=0)
 
-    # Averages are calculated along the timeline (axis=0)
-    averaged_frame = np.mean(stacked_frames, axis=0)
+    # 初始化一个数组来保存最近邻平均值
+    nearest_neighbor_average = np.zeros(frame_shape)
 
-    return averaged_frame
-    # Calculate the average along the first axis (the timeline) using numpy's mean function
-    return np.mean(frames, axis=0)
+    # 遍历每个像素
+    for i in range(frame_shape[0]):
+        for j in range(frame_shape[1]):
+            pixel_values = stacked_frames[:, i, j]
+            average = np.mean(pixel_values)
+            # 找到最接近平均值的像素值
+            nearest = min(pixel_values, key=lambda x: abs(x - average))
+            nearest_neighbor_average[i, j] = nearest
+
+    return nearest_neighbor_average
 
 def create_histogram(image):
     """
-    Create and display a histogram of pixel values in a 2D image.
+    创建并显示2D图像中像素值的直方图。
 
-    Parameters:
-    image (np.array): A 2D array representing an image.
+    参数:
+    image (np.array): 代表图像的2D数组。
     """
-    
     plt.hist(image.ravel(), bins=256, range=[0,256])
-    plt.title('Histogram of Averaged Pixel Values')
+    plt.title('Histogram of Nearest Neighbor Pixel Values')
     plt.xlabel('Pixel Value')
     plt.ylabel('Frequency')
     plt.show()
 
 def main():
-    # Load frames
-   
-    frames = [io.imread(f'frame{i}.png') for i in range(1, 6)]  # 根据实际情况修改
+    # 加载帧 - 根据实际情况修改文件名或路径
+    frames = [io.imread(f'frame{i}.png') for i in range(1, 6)]
+    #change name of the file to the name of the file you want to load
 
-    # Calculate the average value of 2D pixels
-    averaged_image = calculate_2d_pixel_average(frames)
+    nearest_neighbor_image = calculate_2d_pixel_nearest_neighbor(frames)
 
-    create_histogram(averaged_image)
+    create_histogram(nearest_neighbor_image)
 
 if __name__ == "__main__":
     main()
