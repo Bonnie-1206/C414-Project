@@ -5,7 +5,7 @@ import numpy as np
 
 
 def numcheck(input):
-    try:
+    try
         val = int(input)
 
         return True
