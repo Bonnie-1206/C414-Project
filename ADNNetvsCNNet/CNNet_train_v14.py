@@ -330,9 +330,8 @@ def getNormalData_plus(imgs, labs, curidx, left = -1, right = 1, border = 0.01):
 	lb = labs[curidx]
 	imgs_vec = imgs - im
 
+	
 	imgs_vec = (imgs_vec/255.0)*right
-    #- (im/255.0)*right
-#    imgs_vec = imgs_vec - (im/255.0)
 
 
 	imgs_vec = imgs_vec.reshape(frame, row*column, byte)
@@ -392,15 +391,6 @@ def getSpatialData_byHistVid(vid_hist, imgs, labs, curidx, left = -1, right = 1,
 
 
     return spatial_hist, labs_vid
-
-
-
-
-
-
-
-
-
 def getNormalData_byHistVid(vid_hist, imgs, pa_gt, ft_gt, curidx, left = -1, right = 1, delta = 0.01):
 
 
@@ -408,7 +398,6 @@ def getNormalData_byHistVid(vid_hist, imgs, pa_gt, ft_gt, curidx, left = -1, rig
 
     im = imgs[curidx].reshape(row_im*column_im, byte_im)
     lb = readImg_byFilesIdx_pytorch(curidx, pa_gt, ft_gt)
-#    lb = labs[curidx]
 
     im = (im/255.0)*right
     im = torch.round(im/delta)
@@ -448,8 +437,6 @@ def getNormalData_byHistVid_andImgs(vid_hist, im, pa_gt, ft_gt, curidx, left = -
 
     im = (im/255.0)*right
     im = torch.round(im/delta)
-
-
     num_hist = round((right - left)/delta) + 1
     num_right = round(right/delta) + 1
 
@@ -689,50 +676,6 @@ def getNormalData_old(imgs, labs, curidx):
 
     return hist_data, labs_data
 
-
-
-# def getTempData(pa_im, ft_im, pa_gt, ft_gt):
-#     imgs = loadImgs_pytorch(pa_im, ft_im)
-#     labs = loadImgs_pytorch(pa_gt, ft_gt)
-#
-#
-#     frame, row, column, byte = imgs.shape
-#
-# #    curidx = 1140
-#
-#
-#     c_L, f_L = getEmptyCF(-1, 1, 0.01)
-#     len_hist = torch.numel(f_L)
-#
-#     hist_data = torch.empty([row*column, len_hist , byte])
-#     labs_data = torch.empty(row*column)
-#
-#     cnt = 0
-#
-#
-#
-#     for r in range(row):
-#         for c in range(column):
-#             vec = imgs[:, r, c, :].squeeze()/255.0
-#
-#
-#
-#             for b in range(byte):
-# #                c_I, f_I = getHist_plus(sub[:, b], 1, -255, 255)
-#                 hist_data[cnt, :, b] = torch.histc(vec[:, b], 201, -1, 1)/(frame * 1.0)
-#
-#             cnt = cnt + 1
-#
-#
-#         print("r = ", r, " ", row)
-#
-#
-#     return hist_data, imgs, labs
-
-
-
-
-
 def getHistData(pa_im, ft_im, pa_gt, ft_gt, curidx):
 
     imgs = loadImgs_pytorch(pa_im, ft_im)
@@ -822,7 +765,6 @@ def getVideoData():
             sub = vec - val
 
             for b in range(byte):
-#                c_I, f_I = getHist_plus(sub[:, b], 1, -255, 255)
                 hist_data[cnt, :, b] = torch.histc(sub[:, b], 511, -255, 255)
 
             labs_data[cnt] = lb[r, c]
@@ -1096,14 +1038,6 @@ def train(data_vid, labs_vid, batchsize, device, network, loss_func, prodis_mul,
         data = data.to(device, dtype = torch.float32)
         labs = labs.to(device, dtype = torch.int64)
 
-
-#        f_Z_W = torch.cat( [prodis_mul(c_data, data[:, :, b], c_W, f_W[:, :, b], c_Z, delta, params)[1].unsqueeze(-1) for b in range(f_W.shape[-1])], dim = 3 )
-#        f_Z_B = torch.cat( [difdis_mul(c_data, data[:, :, b], c_B, f_B[:, :, b], c_Z, delta, params)[1].unsqueeze(-1) for b in range(f_B.shape[-1])], dim = 3 )
-
-
-#        f_F = f_Z_W + f_Z_B
-#        f_F = f_F.permute(0, 3, 1, 2)
-
         data = data.unsqueeze(1)
         output = network(data)
 
@@ -1112,10 +1046,6 @@ def train(data_vid, labs_vid, batchsize, device, network, loss_func, prodis_mul,
 
         print("epoch = ", epoch,  "  ", i, "\\" , value,   " loss = ", loss.item())
         total_loss = total_loss + loss.item()
-
-
-#        optim_W.zero_grad()
-#        optim_B.zero_grad()
 
         optim_net.zero_grad()
 
@@ -1314,52 +1244,6 @@ def getListNormalData(imgs, labs, curidx_list, mode):
 
 
     return hist_data, hist_labs
-
-#
-# class ClassifyNetwork(nn.Module):
-#     def __init__(self, dis_num):
-#         super().__init__()
-#
-#         self.conv1 = nn.Conv2d(1, 400, (201, 3) )
-# #        self.conv2 = nn.Conv2d(10, 500, (1, 201))
-#
-#         self.fc1 = nn.Linear(400, 800)
-#
-#         self.fc_b1 = nn.Linear(800, 1000)
-#
-#         self.fc_b2 = nn.Linear(1000, 1200)
-#
-#         self.fc_p1 = nn.Linear(1200, 2048)
-#
-#         self.fc2 = nn.Linear(2048, 2)
-#
-#     def forward(self, input):
-#
-# #        print("input.shape:", input.shape)
-#         x = self.conv1(input)
-#
-#
-# #        print("x.shape:", x.shape)
-#         x = x.view(-1, 400)
-#
-# #        print("x.shape:", x.shape)
-#
-# #        x = self.conv2(x)
-#         x = self.fc1(x)
-#
-#         x = self.fc_b1(x)
-#
-#         x = self.fc_b2(x)
-#
-#         x = self.fc_p1(x)
-#         x = F.relu(x)
-# #        x = F.relu( self.conv2(self.conv1(input)) )
-#         x = x.view(-1, 2048)
-#         x = self.fc2(x)
-#
-#
-#         return F.log_softmax(x, dim = 1)
-#
 
 
 
