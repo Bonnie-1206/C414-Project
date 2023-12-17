@@ -1,8 +1,5 @@
 import sys
-
 import numpy as np
-
-
 
 def numcheck(input):
     try
@@ -16,7 +13,6 @@ def numcheck(input):
 
         except ValueError:
             return False
-
 
 class QParams:
 
@@ -197,7 +193,6 @@ class QParams:
     def getParams():
         return 0
 
-
     def __getitem__(self, idx):
 
         return self.m_params[idx]
@@ -205,15 +200,7 @@ class QParams:
     def __setitem__(self, k, v):
         self.m_params[k] = v
 
-
-
     m_params = {}
-
-
-
-
-
-
 
 def main(argc, argv):
 
@@ -234,12 +221,10 @@ def main(argc, argv):
     print(strlist['m_gt'])
     print(strlist['frameidx'])
 
-
     params = QParams()
     params['t'] = 'test'
     params['value'] = 3
     params[6] = 'test str'
-
 
     print(params['t'])
     print(params['value'])
@@ -248,13 +233,11 @@ def main(argc, argv):
     inputparams = QParams()
     inputparams.setParams(argc, argv)
 
-
     print(inputparams['pa_im'])
 
     print(numcheck(4))
 
     print(inputparams['imgs_idx'])
-
 
     print("borderline ==================================")
     print(inputparams['pa_im'])
